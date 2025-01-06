@@ -1,0 +1,63 @@
+{
+    "tile_size": 16,
+    "land": {
+        "tile_size": 32,
+        "height": 11,
+        "width": 6,
+        "margin": 5,
+        "land_quantity": 21,
+        "coordinate": {
+            "x": 21,
+            "y": 21
+        }
+    },
+    "plot": {
+        "tile_size": 16,
+        "width": 25,
+        "height": 32,
+        "margin_right": 4,
+        "margin_bottom": 4,
+        "bed": {
+            "width": 8,
+            "height": 5,
+            "quantity": 6,
+            "margin_right": 3,
+            "margin_bottom": 2,
+            "relative_coordinate": {
+                "x": 3,
+                "y": 10
+            },
+            "area_relative": {
+                "coordinate": {
+                    "x": -10,
+                    "y": -7
+                },
+                "width": 20,
+                "height": 25
+            }
+        },
+        "cage": {
+            "width": 19,
+            "height": 5,
+            "relative_coordinate": {
+                "x": 3,
+                "y": 3
+            }
+        },
+        "area_relative": {
+            "coordinate": {
+                "x": 10,
+                "y": 10
+            },
+            "width": -10,
+            "height": -10
+        },
+        "start_coordinate": {
+            "x": 10,
+            "y": 10
+        }
+    },
+    "notification": {
+        "no_access": "Không có quyền truy cập"
+    }
+}

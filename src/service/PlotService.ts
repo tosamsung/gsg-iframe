@@ -7,13 +7,18 @@ export default class PlotService {
     constructor() {
         this.apiManager = new ApiManager(); // Initialize ApiManager
     }
-    getAllPlotsByOwnerId(id:number): Promise<Plot[]> {
-        return this.apiManager.getAllPlotsByOwnerId(id).then((response:any)=>{
+    getAllPlotsByOwnerId(id: number): Promise<Plot[]> {
+        return this.apiManager.getAllPlotsByOwnerId(id).then((response: any) => {
             return response.data
         })
     }
-    getById(id:string){
-        return this.apiManager.getPlotById(id).then((response:any)=>{
+    getById(id: string) {
+        return this.apiManager.getPlotById(id).then((response: any) => {
+            return response.data
+        })
+    }
+    getPlotsByGroupNumberAndFarmId(groupNumber: number, farmId: number) {
+        return this.apiManager.getPlotsByGroupNumberAndFarmId(groupNumber, farmId).then((response: any) => {
             return response.data
         })
     }

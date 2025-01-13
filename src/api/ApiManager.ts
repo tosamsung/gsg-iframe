@@ -12,7 +12,7 @@ export default class ApiManager {
     constructor() {
         this.httpDigiforce = new HttpClient(DIGIFORCE_URL_API)
     }
-    getFarmingHistoryByBedId(bedId: string,page:number=1){
+    getFarmingHistoryByBedId(bedId: string, page: number = 1) {
         const URI = `/farming_history:list?pageSize=5&sort[]=-createdAt&appends[]=bed&appends[]=bed.bed_plant_history_id&page=${page}&filter=%7B%22$and%22:[%7B%22bed%22:%7B%22id%22:%7B%22$eq%22:%22${bedId}%22%7D%7D%7D]%7D`;
         return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY);
     }
@@ -22,6 +22,10 @@ export default class ApiManager {
     }
     getBedHistoryTypePetByBedId(bedId: string) {
         const URI = `/bed_plant_history:list?pageSize=20&appends[]=bed&appends[]=bed.plot&page=1&filter=%7B%22$and%22:[%7B%22$and%22:[%7B%22bed%22:%7B%22id%22:%7B%22$eq%22:%22${bedId}%22%7D%7D%7D,%7B%22status%22:%7B%22$ne%22:%22finished%22%7D%7D]%7D,%7B%22$and%22:[%7B%22type%22:%7B%22$eq%22:%22pet%22%7D%7D]%7D]%7D&appends=product.pets_id.gender`
+        return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY);
+    }
+    getPlotsByGroupNumberAndFarmId(groupNumber: number, farmId: number) {
+        const URI = `/plot:list?pageSize=20&sort[]=row&sort[]=column&page=1&filter=%7B%22$and%22:[%7B%22group_number%22:%7B%22$eq%22:${groupNumber}%7D%7D,%7B%22farm_id%22:%7B%22$eq%22:${farmId}%7D%7D]%7D`
         return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY);
     }
     getAllPlots() {
@@ -48,7 +52,7 @@ export default class ApiManager {
         const URI = `/crop_variety:get?filterByTk=${varietyId}&filter=%7B%7D`
         return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY);
     }
-    getAllVariety(page:number,pageSize:number) {
+    getAllVariety(page: number, pageSize: number) {
         const URI = `/crop_variety:list?filter=%7B%7D&fields=name&fields=id&appends=avatar&page=${page}&pageSize=${pageSize}`
         return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY);
     }
@@ -65,7 +69,7 @@ export default class ApiManager {
         return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY)
     }
     //chicken
-    getAllChickens(page:number,pageSize:number) {
+    getAllChickens(page: number, pageSize: number) {
         const URI = `/pets:list?filter=%7B%7D&fields=name&fields=id&appends=avatar&page=${page}&pageSize=${pageSize}`
         return this.httpDigiforce.get(URI, undefined, DIGIFORCE_API_KEY)
     }

@@ -6,14 +6,19 @@ import { Button, Spin } from "antd";
 import HistoryTable from "./component/HistoryTable";
 import { FarmingHistory } from "../../../entity/FarmingHistory";
 import { BedArea, MetaData } from "../../../entity/Other";
-import { getStatusEnumDescription } from "../../../entity/enum/Status";
+import { getStatusEnumDescription, StatusEnum } from "../../../entity/enum/Status";
 import { Bed, BedHistory } from "../../../entity/Bed";
 import IStateManagement from "../../../state/IStateManagement";
 import { StateManagement } from "../../../state/implement/StateManagement";
 import CloseButton from "../../../components/CloseButton";
 
 const BedDetail: React.FC = () => {
-  const [bed, setBed] = useState<Bed>(new Bed());
+  const [bed, setBed] = useState<Bed>({
+    width:1,
+    length:10,
+    status:StatusEnum.New,
+    bed_number:0
+  } as Bed);
   const [farmingHistories, setFarminHistories] = useState<FarmingHistory[]>([]);
   const [metatData, setMetaData] = useState<MetaData>({
     count: 0,

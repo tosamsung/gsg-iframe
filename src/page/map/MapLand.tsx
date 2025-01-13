@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import MapPng from '../../assets/image/mapland.png';
 import PlotIcon from '../../assets/image/ploticon.png'
+import MoneyIcon from '../../assets/image/money.jpg'
+
 import { HasPlayerMovedEvent } from '@workadventure/iframe-api-typings';
 import { Coordinate } from '../../entity/Other';
 import { Plot } from '../../entity/Plot';
 import settings from '../../components/settings.json'
+import PlotService from '../../service/PlotService';
 const MAP_AREA = {
   width: 132 * 16,
   height: 124 * 16
@@ -12,8 +15,11 @@ const MAP_AREA = {
 const PLOT = settings.plot
 function MapLand() {
   const [playerPosition, setPlayerPosition] = useState({ x: 10, y: 10 });
-  const [plotCoordinate, setPlotCoordinate] = useState<Coordinate[]>([]);
+  const [plotsCoordinate, setPlotsCoordinate] = useState<Coordinate[]>([]);
+  const [plotsEmpty, setPlotsEmpty] = useState<Coordinate[]>([]);
+  const [plots, setPlots] = useState<Plot[]>([]);
 
+  const plotService = new PlotService()
   const playerRef = useRef(null);
   const convertCoordinateToPercent = (coordinate: Coordinate): Coordinate => {
     return {
@@ -22,8 +28,8 @@ function MapLand() {
     }
   }
   useEffect(() => {
-    if (WA.player.state.plots) {
-      const plots = WA.player.state.plots as Plot[];
+    if (plots && plots.length > 0) {
+
       const owner_id = WA.player.state.id;
       const rows = 3;
       const bigColumns = 2;
@@ -37,7 +43,8 @@ function MapLand() {
         y: (startY + (PLOT.margin_bottom + PLOT.height) * row) * PLOT.tile_size,
       });
 
-      const newPlotCoordinates: Coordinate[] = [];
+      const ownPlotCoordinates: Coordinate[] = [];
+      const emptyPlotCoordinates: Coordinate[] = [];
 
       for (let bigCol = 0; bigCol < bigColumns; bigCol++) {
         const offsetY = bigCol * rows;
@@ -51,11 +58,19 @@ function MapLand() {
               plots[arrayIndex]?.row === currentRow &&
               plots[arrayIndex]?.column === currentCol
             ) {
-              if (plots[arrayIndex]?.owner_id === owner_id) {
+              if (!plots[arrayIndex]?.owner_id) {
                 const percentCoordinate = convertCoordinateToPercent(
                   calculateCoordinates(col, row)
                 );
-                newPlotCoordinates.push(percentCoordinate);
+                emptyPlotCoordinates.push(percentCoordinate);
+              }
+              else if (plots[arrayIndex]?.owner_id === owner_id) {
+                // console.log(plots[arrayIndex]);
+
+                const percentCoordinate = convertCoordinateToPercent(
+                  calculateCoordinates(col, row)
+                );
+                ownPlotCoordinates.push(percentCoordinate);
               }
               arrayIndex++;
             }
@@ -63,9 +78,10 @@ function MapLand() {
         }
         startX += PLOT.width * 2 + PLOT.margin_right * 2;
       }
-      setPlotCoordinate(newPlotCoordinates);
+      setPlotsCoordinate(ownPlotCoordinates);
+      setPlotsEmpty(emptyPlotCoordinates)
     }
-  }, [WA.player.state.plots]);
+  }, [plots]);
   useEffect(() => {
     const fetchPlayerPosition = async () => {
       try {
@@ -77,7 +93,9 @@ function MapLand() {
     };
 
     fetchPlayerPosition();
-
+    plotService.getPlotsByGroupNumberAndFarmId(WA.player.state.landNumber as number, 1).then((response) => {
+      setPlots(response)
+    })
     const handlePlayerMove = (e: HasPlayerMovedEvent) => {
       setPlayerPosition(convertCoordinateToPercent(e));
     };
@@ -90,7 +108,7 @@ function MapLand() {
   return (
     <div className="relative overflow-hidden">
       <img src={MapPng} alt="Map" className="w-full h-auto rounded border-2 border-solid border-orange-300" />
-      {plotCoordinate.map((coord, index) => (
+      {plotsCoordinate.map((coord, index) => (
         <img
           key={index}
           src={PlotIcon}
@@ -102,8 +120,20 @@ function MapLand() {
             left: `${coord.x + 2}%`,
           }}
         />
-      ))
-      }
+      ))}
+      {plotsEmpty.map((coord, index) => (
+        <img
+          key={index}
+          src={MoneyIcon}
+          className="absolute bg-green-200 opacity-80 rounded-full border-2 border-solid "
+          style={{
+            width: `${16}%`,
+            height: `${15}%`,
+            top: `${coord.y + 5}%`,
+            left: `${coord.x + 2}%`,
+          }}
+        />
+      ))}
       <div
         ref={playerRef}
         className="absolute bg-white border-2 border-solid border-orange-500 rounded-full"

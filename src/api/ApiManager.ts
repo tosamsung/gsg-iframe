@@ -1,10 +1,10 @@
 import { User } from "../entity/User"
 import HttpClient from "./HttpClient"
 
-const DIGIFORCE_DOMAIN = import.meta.env.VITE_DIGIFORCE_API_URL
-    ? import.meta.env.VITE_DIGIFORCE_API_URL.replace(/\/$/, '')
-    : ''
-
+// const DIGIFORCE_DOMAIN = import.meta.env.VITE_DIGIFORCE_API_URL
+//     ? import.meta.env.VITE_DIGIFORCE_API_URL.replace(/\/$/, '')
+//     : '' https://gsg-dev.greenskygarden.com
+const DIGIFORCE_DOMAIN = "https://gsg-dev.greenskygarden.com"
 const DIGIFORCE_URL_API = DIGIFORCE_DOMAIN + '/api'
 const DIGIFORCE_API_KEY = WA.player.state.DIGIFORCE_TOKEN as string
 export default class ApiManager {

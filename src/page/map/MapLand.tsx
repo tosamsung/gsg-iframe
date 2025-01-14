@@ -28,6 +28,8 @@ function MapLand() {
     }
   }
   useEffect(() => {
+    console.log(plots);
+
     if (plots && plots.length > 0) {
 
       const owner_id = WA.player.state.id;
@@ -65,8 +67,6 @@ function MapLand() {
                 emptyPlotCoordinates.push(percentCoordinate);
               }
               else if (plots[arrayIndex]?.owner_id === owner_id) {
-                // console.log(plots[arrayIndex]);
-
                 const percentCoordinate = convertCoordinateToPercent(
                   calculateCoordinates(col, row)
                 );
@@ -93,17 +93,31 @@ function MapLand() {
     };
 
     fetchPlayerPosition();
-    plotService.getPlotsByGroupNumberAndFarmId(WA.player.state.landNumber as number, 1).then((response) => {
-      setPlots(response)
-    })
-    const handlePlayerMove = (e: HasPlayerMovedEvent) => {
-      setPlayerPosition(convertCoordinateToPercent(e));
-    };
-    const event = WA.player.onPlayerMove(handlePlayerMove);
+
+    plotService
+      .getPlotsByGroupNumberAndFarmId(WA.player.state.landNumber as number, 1)
+      .then((response) => {
+        setPlots(response);
+      });
+
+    let event: any;
+
+    try {
+      const handlePlayerMove = (e: HasPlayerMovedEvent) => {
+        setPlayerPosition(convertCoordinateToPercent(e));
+      };
+
+      event = WA.player.onPlayerMove(handlePlayerMove);
+    } catch (error) {
+      console.error('Error setting up player move listener:', error);
+    }
     return () => {
-      event.unsubscribe();
+      if (event?.unsubscribe) {
+        event.unsubscribe();
+      }
     };
   }, []);
+
 
   return (
     <div className="relative overflow-hidden">

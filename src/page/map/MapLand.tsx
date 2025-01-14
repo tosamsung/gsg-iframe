@@ -28,8 +28,6 @@ function MapLand() {
     }
   }
   useEffect(() => {
-    console.log(plots);
-
     if (plots && plots.length > 0) {
 
       const owner_id = WA.player.state.id;
